@@ -9,11 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
 
 public class NoteFragment extends Fragment {
     @Nullable
@@ -32,16 +29,12 @@ public class NoteFragment extends Fragment {
         editText.requestFocus();
         final InputMethodManager imm = (InputMethodManager)activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
-       // if(editText.requestFocus()) {
-           //getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        //}
 
         FloatingActionButton fragmentFab = view.findViewById(R.id.fragment_fab);
         fragmentFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activity.strList.add(editText.getText().toString());
-                assert imm != null;
                 imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
                 activity.getSupportFragmentManager().popBackStack();
             }

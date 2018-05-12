@@ -12,15 +12,19 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ArrayList<String> strList;
+    ArrayAdapterWButton adapter;
+    DataBaseSQLite dataBaseSQLite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        strList = new ArrayList<>();
+        //strList = new ArrayList<>();
+        openDB();
+        strList = dataBaseSQLite.read();
 
-        final ArrayAdapterWButton adapter = new ArrayAdapterWButton(this, strList);
+        adapter = new ArrayAdapterWButton(this, strList);
 
         ListView listView = findViewById(R.id.listview);
         listView.setAdapter(adapter);
@@ -37,9 +41,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 NoteFragment nf = new NoteFragment();
                 FragmentManager fm = getSupportFragmentManager();
-                fm.beginTransaction().add(R.id.note_fragment , nf).addToBackStack(null).commit();
-                //floatingActionButton.setVisibility(View.GONE);
+                fm.beginTransaction().replace(R.id.note_fragment , nf).addToBackStack(null).commit();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        dataBaseSQLite.close();
+        super.onDestroy();
+    }
+
+    private void openDB() {
+        dataBaseSQLite = new DataBaseSQLite(this);
+        dataBaseSQLite.open();
+        System.out.println();
     }
 }

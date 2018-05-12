@@ -1,9 +1,11 @@
 package com.example.russell.taskmanager;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +35,25 @@ public class ArrayAdapterWButton extends ArrayAdapter<String> {
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        remove(getItem(position));
+                        showDeleteDialog(position);
                     }
                 });
         return convertView;
+    }
+
+    private void showDeleteDialog(final int position) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setTitle("Удаление элемента")
+                .setMessage("Вы действительно хотите удалить эту запись?")
+                .setNegativeButton("Нет", null)
+                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ((MainActivity)getContext()).dataBaseSQLite.delete(getItem(position));
+                        remove(getItem(position));
+                        System.out.println();
+                    }
+                }).create();
+        alertDialog.show();
     }
 }

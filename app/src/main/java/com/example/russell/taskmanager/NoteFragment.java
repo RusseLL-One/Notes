@@ -13,16 +13,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 public class NoteFragment extends Fragment {
+    MainActivity activity;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        activity = (MainActivity)getActivity();
+        if(activity != null)
+            activity.findViewById(R.id.floatingActionButton).setVisibility(View.INVISIBLE);
         return inflater.inflate(R.layout.note_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         final EditText editText = view.findViewById(R.id.editText);
-        final MainActivity activity = (MainActivity)getActivity();
         if (activity == null) {
             return;
         }
@@ -35,10 +38,20 @@ public class NoteFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 activity.strList.add(editText.getText().toString());
+                activity.dataBaseSQLite.write(editText.getText().toString());
                 imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+                activity.adapter.notifyDataSetChanged();
+
                 activity.getSupportFragmentManager().popBackStack();
             }
         });
         super.onViewCreated(view, savedInstanceState);
+    }
+
+    @Override
+    public void onDestroyView() {
+        if(activity != null)
+            activity.findViewById(R.id.floatingActionButton).setVisibility(View.VISIBLE);
+        super.onDestroyView();
     }
 }

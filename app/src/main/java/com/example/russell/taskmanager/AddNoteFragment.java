@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-public class NoteFragment extends Fragment {
+public class AddNoteFragment extends Fragment {
     MainActivity activity;
     @Nullable
     @Override
@@ -37,8 +37,11 @@ public class NoteFragment extends Fragment {
         fragmentFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.strList.add(editText.getText().toString());
-                activity.dataBaseSQLite.write(editText.getText().toString());
+                Note newNote = new Note();
+                newNote.setText(editText.getText().toString());
+                newNote.setDate("aa");
+                activity.strList.add(newNote);
+                activity.dataBaseSQLite.write(newNote);
                 imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
                 activity.adapter.notifyDataSetChanged();
 

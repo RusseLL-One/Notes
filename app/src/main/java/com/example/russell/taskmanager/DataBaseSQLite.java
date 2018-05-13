@@ -15,11 +15,13 @@ public class DataBaseSQLite {
     public static final int DB_VERSION = 1;
     public static final String DB_TABLE = "NOTES_TABLE";
     public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_NAME = "name";
+    public static final String COLUMN_TEXT = "text";
+    public static final String COLUMN_DATE = "date";
 
     public static final String DB_CREATE = "create table " + DB_TABLE + "(" +
            COLUMN_ID + " integer primary key autoincrement, " +
-            COLUMN_NAME + " text" +
+            COLUMN_TEXT + " text, " +
+            COLUMN_DATE + " text" +
             ");";
 
     public DataBaseSQLite(Context context) {
@@ -52,22 +54,38 @@ public class DataBaseSQLite {
         dbHelper.close();
     }
 
-    public void write(String note) {
+    public void write(Note note) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME, note);
-        sqLiteDatabase.insert(DB_TABLE, null, contentValues);
+        contentValues.put(COLUMN_TEXT, note.getText());
+        contentValues.put(COLUMN_DATE, note.getDate());
+        long id = sqLiteDatabase.insert(DB_TABLE, null, contentValues);
+        note.setId((int)id);
     }
 
-    public void delete(String text) {
-        sqLiteDatabase.delete(DB_TABLE, COLUMN_NAME + " = ?", new String[] {text});
+    public void update(Note note) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_TEXT, note.getText());
+        contentValues.put(COLUMN_DATE, note.getDate());
+        sqLiteDatabase.update(DB_TABLE, contentValues, COLUMN_ID + " = ?", new String[] {String.valueOf(note.getId())});
     }
 
-    public ArrayList<String> read() {
+    public void delete(int id) {
+        sqLiteDatabase.delete(DB_TABLE, COLUMN_ID + " = ?", new String[] {String.valueOf(id)});
+    }
+
+    public ArrayList<Note> read() {
+        //sqLiteDatabase.delete(DB_TABLE, null, null);
         Cursor cursor = sqLiteDatabase.query(DB_TABLE, null, null, null, null, null, null);
-        if (!cursor.moveToFirst()) return null;
-        ArrayList<String> notes = new ArrayList<>();
+        if (!cursor.moveToFirst()) {
+            cursor.close();
+            return new ArrayList<>();
+        }
+        ArrayList<Note> notes = new ArrayList<>();
         do {
-            String note = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
+            Note note = new Note();
+            note.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_ID)));
+            note.setText(cursor.getString(cursor.getColumnIndex(COLUMN_TEXT)));
+            note.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_DATE)));
             notes.add(note);
         } while (cursor.moveToNext());
         cursor.close();

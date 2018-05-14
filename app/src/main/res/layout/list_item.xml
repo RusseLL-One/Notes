@@ -1,22 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingBottom="1dip"
     android:paddingEnd="8dip"
     android:paddingStart="8dip"
-    android:focusable="false"
-
     android:paddingTop="1dip">
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/list_item_text"
         android:maxLines="1"
         android:ellipsize="end"
-        android:focusable="false"
         android:background="?android:attr/selectableItemBackground"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -38,7 +34,6 @@
         android:layout_marginEnd="20dp"
 
         android:layout_marginRight="20dp"
-        android:clickable="false"
         android:focusable="false"
         app:backgroundTint="@android:color/darker_gray"
         app:fabCustomSize="24dp"

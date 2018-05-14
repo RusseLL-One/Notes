@@ -1,6 +1,8 @@
 package com.example.russell.taskmanager;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,10 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
 import android.widget.EditText;
 
 public class AddNoteFragment extends Fragment {
     MainActivity activity;
+    EditText noteEditText;
+    EditText dateEditText;
+    FloatingActionButton fragmentFab;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -25,24 +31,34 @@ public class AddNoteFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        final EditText editText = view.findViewById(R.id.editText);
+        noteEditText = view.findViewById(R.id.noteEditText);
+        dateEditText = view.findViewById(R.id.dateEditText);
+        dateEditText.setOnFocusChangeListener(showDatePickerDialog);
         if (activity == null) {
             return;
         }
-        editText.requestFocus();
+        noteEditText.requestFocus();
         final InputMethodManager imm = (InputMethodManager)activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+        if (imm != null) {
+            //↓ Чтобы убрать варнинг "may produce NullPointerException"
+            imm.showSoftInput(noteEditText, InputMethodManager.SHOW_IMPLICIT);
+        }
 
-        FloatingActionButton fragmentFab = view.findViewById(R.id.fragment_fab);
+        fragmentFab = view.findViewById(R.id.fragment_fab);
         fragmentFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Note newNote = new Note();
-                newNote.setText(editText.getText().toString());
-                newNote.setDate("aa");
-                activity.strList.add(newNote);
+                newNote.setText(noteEditText.getText().toString());
+                newNote.setDate(dateEditText.getText().toString());
                 activity.dataBaseSQLite.write(newNote);
-                imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+                activity.strList.add(newNote);
+                if (imm != null && activity.getCurrentFocus() != null) {
+                    //↓ Чтобы убрать варнинг "may produce NullPointerException"
+                    imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+                    return;
+                }
+
                 activity.adapter.notifyDataSetChanged();
 
                 activity.getSupportFragmentManager().popBackStack();
@@ -50,6 +66,25 @@ public class AddNoteFragment extends Fragment {
         });
         super.onViewCreated(view, savedInstanceState);
     }
+
+    View.OnFocusChangeListener showDatePickerDialog = new View.OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if(hasFocus) {
+                int myYear = 2018;
+                int myMonth = 2;
+                int myDay = 3;
+                DatePickerDialog tpd = new DatePickerDialog(activity, new DatePickerDialog.OnDateSetListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        dateEditText.setText(dayOfMonth + "." + (month + 1) + "." + year);
+                    }
+                }, myYear, myMonth, myDay);
+                tpd.show();
+            }
+        }
+    };
 
     @Override
     public void onDestroyView() {

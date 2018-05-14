@@ -1,6 +1,5 @@
 package com.example.russell.taskmanager;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -13,45 +12,57 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 public class ArrayAdapterWButton extends ArrayAdapter<Note> {
 
-    public ArrayAdapterWButton(@NonNull Context context, @NonNull List<Note> objects) {
+    static class ViewHolder {
+        TextView listItemText;
+        FloatingActionButton listItemFab;
+    }
+
+    ArrayAdapterWButton(@NonNull Context context, @NonNull List<Note> objects) {
         super(context, R.layout.list_item, objects);
     }
 
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        final Note note = getItem(position);
-
+        Note note = getItem(position);
+        ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext())
                     .inflate(R.layout.list_item, parent, false);
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            holder = new ViewHolder();
+            holder.listItemText = convertView.findViewById(R.id.list_item_text);
+            holder.listItemFab = convertView.findViewById(R.id.list_item_fab);
+            convertView.setTag(holder);
+
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+        if(note != null) {
+            holder.listItemText.setText(note.getText());
+        }
+        holder.listItemFab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showDeleteDialog(position);
+                    }
+                });
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                     Bundle noteIndexBundle = new Bundle();
                     noteIndexBundle.putInt("noteIndex", position);
                     EditNoteFragment editNoteFragment = new EditNoteFragment();
                     editNoteFragment.setArguments(noteIndexBundle);
                     ((MainActivity)getContext()).getSupportFragmentManager().beginTransaction()
                             .replace(R.id.note_fragment , editNoteFragment).addToBackStack(null).commit();
-                }
-            });
-        }
-        ((TextView) convertView.findViewById(R.id.list_item_text))
-                .setText(note.getText());
-        (convertView.findViewById(R.id.list_item_fab))
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showDeleteDialog(position);
-                    }
-                });
+                //Toast.makeText(getContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+            }
+        });
         return convertView;
     }
 
@@ -63,9 +74,11 @@ public class ArrayAdapterWButton extends ArrayAdapter<Note> {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ((MainActivity)getContext()).dataBaseSQLite.delete(getItem(position).getId());
-                        remove(getItem(position));
-                        System.out.println();
+                        Note note = getItem(position);
+                        if (note != null) {
+                            ((MainActivity) getContext()).dataBaseSQLite.delete(note.getId());
+                            remove(note);
+                        }
                     }
                 }).create();
         alertDialog.show();

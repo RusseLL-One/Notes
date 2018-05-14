@@ -11,26 +11,26 @@ public class DataBaseSQLite {
     private Context context;
     private SQLiteDatabase sqLiteDatabase;
     private DBHelper dbHelper;
-    public static final String DB_NAME = "NOTES_DB";
-    public static final int DB_VERSION = 1;
-    public static final String DB_TABLE = "NOTES_TABLE";
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_TEXT = "text";
-    public static final String COLUMN_DATE = "date";
+    private static final String DB_NAME = "NOTES_DB";
+    private static final int DB_VERSION = 1;
+    private static final String DB_TABLE = "NOTES_TABLE";
+    private static final String COLUMN_ID = "_id";
+    private static final String COLUMN_TEXT = "text";
+    private static final String COLUMN_DATE = "date";
 
-    public static final String DB_CREATE = "create table " + DB_TABLE + "(" +
+    private static final String DB_CREATE = "create table " + DB_TABLE + "(" +
            COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_TEXT + " text, " +
             COLUMN_DATE + " text" +
             ");";
 
-    public DataBaseSQLite(Context context) {
+    DataBaseSQLite(Context context) {
         this.context = context;
     }
 
     private class DBHelper extends SQLiteOpenHelper {
 
-        public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
             super(context, name, factory, version);
         }
 

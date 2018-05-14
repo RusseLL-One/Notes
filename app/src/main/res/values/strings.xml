@@ -2,4 +2,6 @@
     <string name="app_name">NotesManager</string>
     <string name="toast">Hello</string>
     <string name="edit_text_hint">Введите текст…</string>
+    <string name="DateLabel">Дата:</string>
+    <string name="DatePlaceholder">dd.mm.yyyy</string>
 </resources>

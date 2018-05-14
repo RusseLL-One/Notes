@@ -15,16 +15,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import java.util.Calendar;
+
 public class AddNoteFragment extends Fragment {
     MainActivity activity;
     EditText noteEditText;
     EditText dateEditText;
     FloatingActionButton fragmentFab;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        activity = (MainActivity)getActivity();
-        if(activity != null)
+        activity = (MainActivity) getActivity();
+        if (activity != null)
             activity.findViewById(R.id.floatingActionButton).setVisibility(View.INVISIBLE);
         return inflater.inflate(R.layout.note_fragment, container, false);
     }
@@ -38,7 +41,7 @@ public class AddNoteFragment extends Fragment {
             return;
         }
         noteEditText.requestFocus();
-        final InputMethodManager imm = (InputMethodManager)activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        final InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (imm != null) {
             //↓ Чтобы убрать варнинг "may produce NullPointerException"
             imm.showSoftInput(noteEditText, InputMethodManager.SHOW_IMPLICIT);
@@ -58,9 +61,7 @@ public class AddNoteFragment extends Fragment {
                     imm.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
                     return;
                 }
-
                 activity.adapter.notifyDataSetChanged();
-
                 activity.getSupportFragmentManager().popBackStack();
             }
         });
@@ -70,17 +71,17 @@ public class AddNoteFragment extends Fragment {
     View.OnFocusChangeListener showDatePickerDialog = new View.OnFocusChangeListener() {
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
-            if(hasFocus) {
-                int myYear = 2018;
-                int myMonth = 2;
-                int myDay = 3;
+            if (hasFocus) {
+                int year = Calendar.getInstance().get(Calendar.YEAR);
+                int month = Calendar.getInstance().get(Calendar.MONTH);
+                int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
                 DatePickerDialog tpd = new DatePickerDialog(activity, new DatePickerDialog.OnDateSetListener() {
                     @SuppressLint("SetTextI18n")
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                         dateEditText.setText(dayOfMonth + "." + (month + 1) + "." + year);
                     }
-                }, myYear, myMonth, myDay);
+                }, year, month, day);
                 tpd.show();
             }
         }
@@ -88,7 +89,7 @@ public class AddNoteFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        if(activity != null)
+        if (activity != null)
             activity.findViewById(R.id.floatingActionButton).setVisibility(View.VISIBLE);
         super.onDestroyView();
     }

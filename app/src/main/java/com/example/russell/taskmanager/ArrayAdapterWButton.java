@@ -42,25 +42,24 @@ public class ArrayAdapterWButton extends ArrayAdapter<Note> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        if(note != null) {
+        if (note != null) {
             holder.listItemText.setText(note.getText());
         }
         holder.listItemFab.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showDeleteDialog(position);
-                    }
-                });
+            @Override
+            public void onClick(View v) {
+                showDeleteDialog(position);
+            }
+        });
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    Bundle noteIndexBundle = new Bundle();
-                    noteIndexBundle.putInt("noteIndex", position);
-                    EditNoteFragment editNoteFragment = new EditNoteFragment();
-                    editNoteFragment.setArguments(noteIndexBundle);
-                    ((MainActivity)getContext()).getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.note_fragment , editNoteFragment).addToBackStack(null).commit();
-                //Toast.makeText(getContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+                Bundle noteIndexBundle = new Bundle();
+                noteIndexBundle.putInt("noteIndex", position);
+                EditNoteFragment editNoteFragment = new EditNoteFragment();
+                editNoteFragment.setArguments(noteIndexBundle);
+                ((MainActivity) getContext()).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.note_fragment, editNoteFragment).addToBackStack(null).commit();
             }
         });
         return convertView;

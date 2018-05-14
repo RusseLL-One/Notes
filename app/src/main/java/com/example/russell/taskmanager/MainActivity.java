@@ -19,7 +19,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //strList = new ArrayList<>();
         openDB();
         strList = dataBaseSQLite.read();
 
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 AddNoteFragment nf = new AddNoteFragment();
                 FragmentManager fm = getSupportFragmentManager();
-                fm.beginTransaction().replace(R.id.note_fragment , nf).addToBackStack(null).commit();
+                fm.beginTransaction().replace(R.id.note_fragment, nf).addToBackStack(null).commit();
             }
         });
     }

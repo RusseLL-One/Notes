@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import java.util.ArrayList;
 
 public class DataBaseSQLite {
@@ -19,7 +20,7 @@ public class DataBaseSQLite {
     private static final String COLUMN_DATE = "date";
 
     private static final String DB_CREATE = "create table " + DB_TABLE + "(" +
-           COLUMN_ID + " integer primary key autoincrement, " +
+            COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_TEXT + " text, " +
             COLUMN_DATE + " text" +
             ");";
@@ -59,22 +60,21 @@ public class DataBaseSQLite {
         contentValues.put(COLUMN_TEXT, note.getText());
         contentValues.put(COLUMN_DATE, note.getDate());
         long id = sqLiteDatabase.insert(DB_TABLE, null, contentValues);
-        note.setId((int)id);
+        note.setId((int) id);
     }
 
     public void update(Note note) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_TEXT, note.getText());
         contentValues.put(COLUMN_DATE, note.getDate());
-        sqLiteDatabase.update(DB_TABLE, contentValues, COLUMN_ID + " = ?", new String[] {String.valueOf(note.getId())});
+        sqLiteDatabase.update(DB_TABLE, contentValues, COLUMN_ID + " = ?", new String[]{String.valueOf(note.getId())});
     }
 
     public void delete(int id) {
-        sqLiteDatabase.delete(DB_TABLE, COLUMN_ID + " = ?", new String[] {String.valueOf(id)});
+        sqLiteDatabase.delete(DB_TABLE, COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
     }
 
     public ArrayList<Note> read() {
-        //sqLiteDatabase.delete(DB_TABLE, null, null);
         Cursor cursor = sqLiteDatabase.query(DB_TABLE, null, null, null, null, null, null);
         if (!cursor.moveToFirst()) {
             cursor.close();

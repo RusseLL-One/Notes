@@ -24,7 +24,7 @@ public class EditNoteFragment extends AddNoteFragment {
             dateEditText.setText(editingNote.getDate());
         }
         noteEditText.requestFocus();
-        final InputMethodManager imm = (InputMethodManager)activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        final InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         if (imm != null) {
             //↓ Чтобы убрать варнинг "may produce NullPointerException"
             imm.showSoftInput(noteEditText, InputMethodManager.SHOW_IMPLICIT);
